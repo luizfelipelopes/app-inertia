@@ -34,6 +34,8 @@ jobs:
       run: npm install
     - name: Build NPM
       run: npm run build
+    - name: Set environment variables
+      run: echo "LARAVEL_BYPASS_ENV_CHECK=1" >> $GITHUB_ENV  
     - name: Execute Tests (Front-end via Jest)
       run: npm run test  
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
