@@ -35,7 +35,7 @@ jobs:
     - name: Build NPM
       run: npm run build
     - name: Execute Tests (Front-end via Jest)
-      run: npm run build  
+      run: npm run test  
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite
