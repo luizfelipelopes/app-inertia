@@ -1,0 +1,70 @@
+<?php
+
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
+use App\Jobs\ProcessPodcast;
+use App\Jobs\SendEmail;
+use App\Mail\OrderShipped;
+use App\Models\User;
+use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+Route::get('/test', function () {
+
+    // dispatch(function () {
+
+    //     logger('Hello World!');
+
+    // })->delay(now()->addMinutes(1));
+
+    // User::all()->each(function ($user) {
+    //     ProcessPodcast::dispatch($user);
+    // });
+
+    $user = User::first();
+
+    User::all()->each(function ($user) {
+        SendEmail::dispatch($user);
+    });
+
+    // Mail::to($user)->send(new OrderShipped($user));
+
+    return (new OrderShipped($user))->render();
+});
+
+
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
+});
+
+Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    
+    Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::post('/users', [UserController::class, 'store']);
+    Route::put('/users/{user}/update', [UserController::class, 'update'])->name('users.update');
+    Route::get('/users/{user}/show', [UserController::class, 'show'])->name('users.show');
+    Route::delete('/users/{user}/destroy', [UserController::class, 'destroy'])->name('users.destroy');
+
+    Route::get('/users/notifications', [UserController::class, 'allNotifications'])->name('users.allNotifications');
+    Route::get('/users/{user}/notification', [UserController::class, 'sendNotification'])->name('users.notification');
+
+    Route::get('/users/emails', [UserController::class, 'sendAllEmails'])->name('users.allEmails');
+    Route::get('/users/{user}/emails', [UserController::class, 'sendEmail'])->name('users.email');
+});
+
+require __DIR__.'/auth.php';
