@@ -32,8 +32,8 @@ jobs:
         touch database/database.sqlite
     - name: Install NPM
       run: npm install
-    - name: Execute NPM
-      run: npm run dev
+    - name: Build NPM
+      run: npm run build
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite
