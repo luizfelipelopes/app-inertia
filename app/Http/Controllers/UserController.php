@@ -7,6 +7,7 @@ use App\Jobs\ProcessPodcast;
 use App\Jobs\SendEmail;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -14,7 +15,12 @@ class UserController extends Controller
     private $users;
     public function __construct()
     {
-        $this->users = User::query()->paginate(10);
+        $page = request()->query('page', 1);
+        $cacheKey = "users_page_{$page}";
+
+        $this->users = Cache::remember($cacheKey, 60, function () {
+            return User::query()->paginate(500);
+        });
     }
 
     public function index()

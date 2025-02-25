@@ -2,38 +2,13 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
-use App\Jobs\ProcessPodcast;
-use App\Jobs\SendEmail;
-use App\Mail\OrderShipped;
-use App\Models\User;
 use Illuminate\Foundation\Application;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/test', function () {
-
-    // dispatch(function () {
-
-    //     logger('Hello World!');
-
-    // })->delay(now()->addMinutes(1));
-
-    // User::all()->each(function ($user) {
-    //     ProcessPodcast::dispatch($user);
-    // });
-
-    $user = User::first();
-
-    User::all()->each(function ($user) {
-        SendEmail::dispatch($user);
-    });
-
-    // Mail::to($user)->send(new OrderShipped($user));
-
-    return (new OrderShipped($user))->render();
+    return 'Test Done!';
 });
-
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
