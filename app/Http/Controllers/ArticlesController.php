@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ArticleStoreRequest;
 use App\Models\Article;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -22,8 +23,6 @@ class ArticlesController extends Controller
         $time = microtime(true) - $start;
         Log::info("Cache time: {$time} seconds");
         return $articles;
-        // return Cache::rememberForever('articles', 
-        // fn () => Article::all());
     }
 
     public function allWithoutCache()
@@ -49,9 +48,9 @@ class ArticlesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(ArticleStoreRequest $request)
     {
-        //
+        return Article::create($request->validated());
     }
 
     /**
@@ -59,7 +58,7 @@ class ArticlesController extends Controller
      */
     public function show(string $id)
     {
-        //
+        return Article::findOrFail($id);
     }
 
     /**
